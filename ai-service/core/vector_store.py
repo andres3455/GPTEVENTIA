@@ -1,33 +1,30 @@
+# core/vector_store.py
 import numpy as np
 from typing import List, Dict
 
+def cosine_similarity(a, b):
+    a = np.array(a, dtype=float)
+    b = np.array(b, dtype=float)
+    denom = (np.linalg.norm(a) * np.linalg.norm(b))
+    return float(np.dot(a, b) / denom) if denom != 0 else 0.0
+
 class VectorStore:
     def __init__(self):
-        self.eventos = []  # lista de { "id": X, "texto": "...", "embedding": [...] }
+        self.vectors: List[np.ndarray] = []
+        self.metadatas: List[Dict] = []
 
-    def agregar_evento(self, event_id: str, texto: str, embedding: List[float]):
-        self.eventos.append({
-            "id": event_id,
-            "texto": texto,
-            "embedding": embedding
-        })
+    def add(self, vector: List[float], metadata: Dict):
+        self.vectors.append(np.array(vector, dtype=float))
+        self.metadatas.append(metadata)
 
-    def similitud_coseno(self, a: List[float], b: List[float]) -> float:
-        a = np.array(a)
-        b = np.array(b)
-        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+    def top_k(self, query_vector: List[float], k: int = 5):
+        q = np.array(query_vector, dtype=float)
+        scores = []
+        for v, m in zip(self.vectors, self.metadatas):
+            s = cosine_similarity(q, v)
+            scores.append({"score": s, "metadata": m})
+        scores.sort(key=lambda x: x["score"], reverse=True)
+        return scores[:k]
 
-    def buscar_similares(self, embedding_consulta: List[float], top_k: int = 3) -> List[Dict]:
-        resultados = []
-
-        for evento in self.eventos:
-            score = self.similitud_coseno(embedding_consulta, evento["embedding"])
-            resultados.append({
-                "id": evento["id"],
-                "texto": evento["texto"],
-                "score": float(score)
-            })
-
-        resultados.sort(key=lambda x: x["score"], reverse=True)
-
-        return resultados[:top_k]
+    def all(self):
+        return [{"score": None, "metadata": m} for m in self.metadatas]

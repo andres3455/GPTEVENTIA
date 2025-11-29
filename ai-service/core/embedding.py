@@ -1,33 +1,23 @@
+# core/embedding.py
+"""
+Interfaz de embeddings. Cambia el provider aquí para usar Jina o HuggingFace.
+"""
+
+from core.embedding_providers.jina_provider import JinaEmbeddingProvider
+from core.embedding_providers.huggingface_provider import HuggingFaceEmbeddingProvider
 import os
-import requests
 
-JINA_API_KEY = os.getenv("JINA_API_KEY")
+# Selección de provider por variable de entorno: JINA or HF
+DEFAULT_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "JINA").upper()
 
-if not JINA_API_KEY:
-    raise Exception("❌ No existe la variable de entorno JINA_API_KEY")
-
-JINA_URL = "https://api.jina.ai/v1/embeddings"
+if DEFAULT_PROVIDER == "HF" or DEFAULT_PROVIDER == "HUGGINGFACE":
+    provider = HuggingFaceEmbeddingProvider()
+else:
+    provider = JinaEmbeddingProvider()
 
 def generar_embedding(texto: str):
-    """
-    Genera un embedding usando Jina Embeddings v3 (gratis)
-    """
-
-    headers = {
-        "Authorization": f"Bearer {JINA_API_KEY}",
-        "Content-Type": "application/json"
-    }
-
-    body = {
-        "model": "jina-embeddings-v3",
-        "input": texto
-    }
-
-    response = requests.post(JINA_URL, json=body, headers=headers)
-
-    if response.status_code != 200:
-        print("Error Jina:", response.text)
-        raise Exception("❌ No se pudo generar el embedding con Jina")
-
-    data = response.json()
-    return data["data"][0]["embedding"]
+    # normalize text a bit
+    if not isinstance(texto, str):
+        texto = str(texto)
+    texto = texto.replace("\n", " ").strip()
+    return provider.embed(texto)

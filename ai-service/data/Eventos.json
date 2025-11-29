@@ -1,18 +1,22 @@
 [
-    {
-        "id": "1",
-        "descripcion": "Clase grupal de yoga al aire libre."
-    },
-    {
-        "id": "2",
-        "descripcion": "Entrenamiento funcional de alta intensidad."
-    },
-    {
-        "id": "3",
-        "descripcion": "Caminata ecológica para principiantes."
-    },
-    {
-        "id": "4",
-        "descripcion": "Sesión de meditación guiada para reducir estrés."
-    }
+  {
+    "id": "e1",
+    "titulo": "Clase de yoga para principiantes",
+    "descripcion": "Sesión suave para aprender los fundamentos del yoga y mejorar la movilidad."
+  },
+  {
+    "id": "e2",
+    "titulo": "Entrenamiento funcional de alta intensidad",
+    "descripcion": "Clase enfocada en fuerza y cardio para mejorar resistencia."
+  },
+  {
+    "id": "e3",
+    "titulo": "Caminata ecológica para principiantes",
+    "descripcion": "Recorrido al aire libre por senderos tranquilos para conectar con la naturaleza."
+  },
+  {
+    "id": "e4",
+    "titulo": "Sesión de meditación guiada",
+    "descripcion": "Práctica guiada de respiración y relajación para reducir estrés."
+  }
 ]
